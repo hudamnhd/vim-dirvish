@@ -148,7 +148,8 @@ func! dirvish#shdo(paths, cmd) abort
       let lines[i] = '#invalid path: '.shellescape(f)
       continue
     endif
-    let f = !jagged && 2==exists(':lcd') ? fnamemodify(f, ':t') : lines[i]
+    "let f = !jagged && 2==exists(':lcd') ? fnamemodify(f, ':t') : lines[i]
+    let f =  expand(lines[i])
     let lines[i] = substitute(cmd, '\V{}', escape(shellescape(f),'&\'), 'g')
   endfor
   execute 'silent split' tmpfile '|' (2==exists(':lcd')?('lcd '.dir):'')
@@ -168,7 +169,7 @@ func! dirvish#shdo(paths, cmd) abort
       \.'|buffer '.bufnr('%').'|setlocal bufhidden=wipe|endif'
   augroup END
 
-  nnoremap <buffer><silent> Z! :silent write<Bar>exe '!'.(has('win32')?fnameescape(escape(expand('%:p:gs?\\?/?'), '&\')):join(map(split(&shell), 'shellescape(v:val)')).' %')<Bar>if !v:shell_error<Bar>close<Bar>endif<CR>
+  nnoremap <buffer><silent> ! :silent write<Bar>exe '!'.(has('win32')?fnameescape(escape(expand('%:p:gs?\\?/?'), '&\')):join(map(split(&shell), 'shellescape(v:val)')).' %')<Bar>if !v:shell_error<Bar>close<Bar>endif<CR>
 endf
 
 " Returns true if the buffer was modified by the user.
